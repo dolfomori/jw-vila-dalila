@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html lang="pt">
+
+<body>
+
+    <%- include('../header') %>
+
+    <h2> Admin de publicadores </h2>
+
+    <div>
+        <ul>
+
+            <% publicadores.forEach ( publicador => { %>
+
+            <li class="pub"><%- publicador.nome %>
+            <a href="/admin/publicadores/delete/<%- publicador.id %>"><button class="button-ed">Excluir</button></a>
+            <a href="/admin/publicadores/editar/<%- publicador.id %>"><button class="button-ed"> Editar</button></a>
+            </li>
+            <% }) %>
+            
+        </ul>
+    </div>
+    <a href="/admin/publicadores/novo"><button class="header-jw" id="novo-grupo"> Novo Publicador</button></a>
+
+</body>
+
+</html>

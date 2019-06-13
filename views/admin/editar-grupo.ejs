@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html lang="pt">
+
+<body>
+
+        <%- include('../header') %>
+
+    <h2> Editar Grupo
+        <a class="li" href="/admin/grupos"> Grupos </a>
+    </h2>
+
+    <div>
+        <form method="POST"> 
+            <label> Nome </label>
+            <input type="text" name="grupo" value="<%= grupos.grupo%>">
+            <br>
+
+            <button>Salvar Grupo</button>
+
+        </form>
+
+
+    </div>
+
+</body>
+
+</html>

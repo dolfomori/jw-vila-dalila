@@ -1,0 +1,32 @@
+<html lang="pt">
+
+<body>
+
+    <%- include('header') %>
+
+    <div>
+            
+            <h2><%= publicador.nome%></h2>
+            <br>
+            <input class="checkbox" type="checkbox" name="pioneiro" value="1" disabled <% if(publicador.pioneiro==1){%> checked <% } %> > Pioneiro </input> 
+            <br>
+            <input class="checkbox" type="checkbox" name="anciao" value="1" disabled <% if(publicador.anciao==1){%> checked <% } %>> Ancião</input> 
+            <br>
+            <input class="checkbox" type="checkbox" name="servo" value="1" disabled <% if(publicador.servo==1){%> checked <% } %>> Servo-Ministerial</input> 
+            <br>
+            <input class="checkbox" type="checkbox" name="tvjw" value="1" disabled <% if(publicador.tvjw==1){%> checked <% } %>> Assiste ao TVJW </input> 
+            <br>
+            <input class="checkbox" type="checkbox" name="diretrizes" value="1" disabled <% if(publicador.diretrizes==1){%> checked <% } %>> Cartão Diretrizes Atualizado</input> 
+            <br>
+            <input class="checkbox" type="checkbox" name="dc50" value="1" disabled <% if(publicador.dc50==1){%> checked <% } %>> DC-50 Aprovada </input> 
+            <br>
+         
+            <br>
+
+        </form>
+
+
+    </div>
+</body>
+
+</html>

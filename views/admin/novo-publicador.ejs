@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="pt">
+
+<body>
+
+    <%- include('../header') %>
+
+    <h2> Novo Publicador</h2>
+
+    <div>
+        <form method="POST" class="form-pub">
+            <label> Nome </label>
+            <input type="text" name="nome">
+            <br>
+            <input type="checkbox" name="pioneiro" value="1"> Pioneiro
+            <br>
+            <input type="checkbox" name="servo" value="1"> Servo Ministerial
+            <br>
+            <input type="checkbox" name="anciao" value="1"> Ancião
+            <br>
+            <input type="checkbox" name="tvjw" value="1"> Assiste o TVJW 
+            <br>
+            <input type="checkbox" name="diretrizes" value="1"> Cartão Diretrizes Atualizado
+            <br>
+            <input type="checkbox" name="dc50" value="1"> DC-50 Aprovada
+
+            <br>
+
+            <label>Grupo</label>
+            <select name="grupo">
+                <% grupos.forEach (grupo => { %>
+                    <option value="<%= grupo.id %>"><%= grupo.grupo %> </option>
+               <% }) %>
+                
+            </select>
+            <br>
+
+
+            <button class="header-jw" id="novo-pub">Novo Publicador</button>
+
+        </form>
+
+
+    </div>
+
+</body>
+
+</html>

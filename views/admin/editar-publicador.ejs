@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="pt">
+
+<body>
+
+        <%- include('../header') %>
+
+    <h2> Editar Publicadores
+        <a href="/admin/publicadores"> Publicadores </a>
+    </h2>
+
+    <div>
+        <form method="POST"> 
+            <label> Nome </label>
+            <input type="text" name="nome" value="<%= publicador.nome%>">
+            <br>
+            <input type="checkbox" name="pioneiro" value="1" <% if(publicador.pioneiro==1){%> checked <% } %> > Pioneiro
+            <br>
+            <input type="checkbox" name="anciao" value="1"<% if(publicador.anciao==1){%> checked <% } %>> Ancião
+            <br>
+            <input type="checkbox" name="servo" value="1"<% if(publicador.servo==1){%> checked <% } %>> Servo-Ministerial
+            <br>
+            <input type="checkbox" name="tvjw" value="1"<% if(publicador.tvjw==1){%> checked <% } %>> Assiste ao TVJW ?
+            <br>
+            <input type="checkbox" name="diretrizes" value="1"<% if(publicador.diretrizes==1){%> checked <% } %>> Cartão Diretrizes Atualizado
+            <br>
+            <input type="checkbox" name="dc50" value="1"<% if(publicador.dc50==1){%> checked <% } %>> DC-50 Aprovada ?
+            <br>
+            <label>Grupo</label>
+            <select name="grupo">
+                <% grupos.forEach (grupo => { %>
+                    <option value="<%= grupo.id %>" <% if(grupo.id == publicador.grupo){%>selected <% } %>> <%= grupo.grupo %>  </option>
+               <% }) %>
+                
+            </select>
+            <br>
+
+            <button class="publicador">Salvar Publicador</button>
+
+        </form>
+
+
+    </div>
+</body>
+
+</html>

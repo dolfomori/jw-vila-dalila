@@ -1,0 +1,18 @@
+<html lang="pt"></html>
+        <%- include('header') %>
+
+<body>
+
+        <% publicadores.forEach( publicador => { %>
+            <ul>
+                  <li><a href="publicador/<%- publicador.id %>"> <%- publicador.nome %> </a></li><input type="checkbox" name="presente" value="1">
+            </ul>
+        <%}) %>
+
+        <button>Enviar Assistência</button>
+
+
+</body>
+
+
+</html>

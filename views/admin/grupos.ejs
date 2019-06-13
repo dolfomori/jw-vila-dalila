@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html lang="pt">
+
+<body>
+
+        <%- include('../header') %>
+
+    <h2> Admin de Grupos    </h2>
+
+    <div>
+        <ul>
+            <% grupos.forEach ( grupo => { %>
+                
+            <li class="li">
+                <%- grupo.grupo %> 
+                <a href="/admin/grupos/delete/<%- grupo.id %>"><button class="button-ed">Excluir</button></a>
+                <a href="/admin/grupos/editar/<%- grupo.id %>"><button class="button-ed">Editar</button></a>
+            </li>
+
+            <% }) %>
+        </ul>
+    </div>
+    <a href="/admin/grupos/novo"><button class="header-jw" id="novo-grupo">Novo Grupo</button></a>
+
+</body>
+
+</html>
