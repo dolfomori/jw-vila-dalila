@@ -70,10 +70,12 @@ app.get('/assistencia-grupo', async(req, res) => {
 app.get('/assistencia-pub/:id', async(req, res) => {
     const { id } = req.params
     const db = await dbConnection
+    const grupo = await db.get(`select * from grupos where id = ${id}`)
     const publicadores = await db.all(`select * from publicadores where grupo=${id};`)
 
     res.render('assistencia-pub', {
-        publicadores
+        publicadores,
+        grupo
     })
 })
 

@@ -2,15 +2,14 @@
         <%- include('header') %>
 
 <body>
+        <h2>Assistência <%-grupo.grupo%> </h2>
 
         <% publicadores.forEach( publicador => { %>
             <ul>
-                  <li><a href="publicador/<%- publicador.id %>"> <%- publicador.nome %> </a></li><input type="checkbox" name="presente" value="1">
+                  <li><input type="checkbox" name="presente" value="1"><a href="publicador/<%- publicador.id %>"> <%- publicador.nome %> </a></li>
             </ul>
         <%}) %>
-
-        <button>Enviar Assistência</button>
-
+        <button class="header-jw" id="novo-grupo">Enviar Dados</button>
 
 </body>
 
