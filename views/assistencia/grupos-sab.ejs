@@ -1,0 +1,10 @@
+<%- include('../header') %>
+
+    <h2>Grupos</h2>
+
+    <% grupos.forEach( grupo => { %>
+        <ul>
+            <li class="li" ><a href="publicadores-sab/<%- grupo.id %>"> <%- grupo.grupo %> </a></li>
+        </ul>
+    <%}) %>
+

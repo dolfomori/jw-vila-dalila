@@ -1,17 +1,16 @@
 <html lang="pt">
-        <%- include('header') %>
+    <%- include('../header') %>
 
 <body>
         <h2><%-grupo.grupo %></h2>
 
         <% publicadores.forEach( publicador => { %>
             <ul>
-                <li class="li"><a href="publicador/<%- publicador.id %>"> <%- publicador.nome %> </a></li>
+                <li class="li"><a href="/publicador/<%- publicador.id %>"> <%- publicador.nome %> </a></li>
             </ul>
         <%}) %>
 
 </body>
-<%- include('footer') %>
 
 
 </html>

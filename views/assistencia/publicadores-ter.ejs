@@ -1,0 +1,35 @@
+<html lang="pt">
+
+</html>
+<%- include('../header') %>
+
+<body>
+        <h2>Assistência <%-grupo.grupo%> </h2>
+        <% let x= 0; %>
+        <% publicadores.forEach( publicador => { %>
+                <% if (publicador.presente == 1) x= 1; %>
+        <%}) %>
+
+
+        <div>
+                <form method="POST">
+
+                        <% publicadores.forEach( publicador => { %>
+
+
+                        <ul>
+                                <li><input type="checkbox" name="<%- publicador.publicador %>" value=1 <% if(x == 1) { %> disabled <%} %> <% if(publicador.presente == 1) { %> checked <%} %>  > <%- publicador.publicador %>  </li>
+                        </ul>
+
+                        <%}) %>
+
+                        <button class="pure-button pure-button-primary" id="novo-grupo" onclick="return confirm('Enviar Assistência? Após enviada só será possível alterações pelo Admin!')" >Enviar Dados</button>
+
+
+                </form>
+        </div>
+
+</body>
+
+
+</html>

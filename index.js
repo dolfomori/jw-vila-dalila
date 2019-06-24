@@ -15,6 +15,8 @@ app.set('view engine', 'ejs')
 app.use(express.static(path.join(__dirname, 'public'))) 
 app.use(bodyParser.urlencoded({ extended: true }))
 
+
+//HOME
 app.get('/', async(req, res) => {
     const db = await dbConnection
     const gruposDB = await db.all('select * from grupos;')
@@ -43,12 +45,54 @@ app.get('/', async(req, res) => {
         getTime
     })
 })
+//RELATÓRIO
 
-app.get('/assistencia', async(req, res) => {
+app.get('/relatorios', async(req, res) => {
     const db = await dbConnection
     const grupos = await db.all('select * from grupos;')
-    const { dayNumber, dayString, year, month, weekDay }= getToday.getToday()
-    res.render('assistencia', {
+
+    res.render('relatorios/home', {
+        grupos
+    })
+})
+
+app.get('/relatorios/grupo/:id', async(req, res) => {
+    const { id } = req.params
+    const db = await dbConnection
+    const grupo = await db.get(`select * from grupos where id = ${id}`)
+    const publicadores = await db.all(`select * from publicadores where grupo=${id};`)
+    const months = { Janeiro:1,
+                    Fevereiro:2,
+                    Março:3,
+                    Abril:4,
+                    Maio:5,
+                    Junho:6,
+                    Julho:7,
+                    Agosto:8,
+                    Setembro:9,
+                    Outubro:10,
+                    Novembro:11,
+                    Dezembro:12 }
+    const months2 = Object.keys(months)
+
+    console.log(res)
+    res.render('relatorios/grupo', {
+        grupo,
+        publicadores,
+        months2
+    })
+})
+
+
+
+
+//ASSISTENCIA
+
+app.get('/assistencia', async(req, res) => {
+    const { dayNumber, dayString, year, month, weekDay } = getToday.getToday()
+    const db = await dbConnection
+    const grupos = await db.all('select * from grupos;') 
+    res.render('assistencia/home', {
         grupos,
         dayNumber, 
         dayString, 
@@ -58,32 +102,100 @@ app.get('/assistencia', async(req, res) => {
     })
 })
 
-app.get('/assistencia-grupo', async(req, res) => {
+app.get('/assistencia/grupos-ter', async(req, res) => {
     const db = await dbConnection
     const grupos = await db.all('select * from grupos;')
 
-    res.render('assistencia-grupo', {
+    res.render('assistencia/grupos-ter', {
         grupos
     })
 })
 
-app.get('/assistencia-pub/:id', async(req, res) => {
+app.get('/assistencia/grupos-sab', async(req, res) => {
+    const db = await dbConnection
+    const grupos = await db.all('select * from grupos;')
+
+    res.render('assistencia/grupos-sab', {
+        grupos
+    })
+})
+
+app.get('/assistencia/publicadores-ter/:id', async(req, res) => {
+    const { getTerTab } = getToday.getToday()
+    const db = await dbConnection
+    const { id } = req.params
+    const grupo = await db.get(`select * from grupos where id = ${id}`)
+    //const publicadores = await db.all(`select * from publicadores where grupo=${id};`)
+    const publicadores = await db.all(`select * from assistencia${getTerTab} where grupo=${id};`)
+
+    console.log(publicadores)
+
+    res.render('assistencia/publicadores-ter', {
+        publicadores,
+        grupo        
+    })
+}) 
+
+app.get('/assistencia/publicadores-sab/:id', async(req, res) => {
+    const { getSabTab } = getToday.getToday()
     const { id } = req.params
     const db = await dbConnection
     const grupo = await db.get(`select * from grupos where id = ${id}`)
-    const publicadores = await db.all(`select * from publicadores where grupo=${id};`)
+    //const publicadores = await db.all(`select * from publicadores where grupo=${id};`)
+    const publicadores = await db.all(`select * from assistencia${getSabTab} where grupo=${id};`)
 
-    res.render('assistencia-pub', {
+    res.render('assistencia/publicadores-sab', {
         publicadores,
         grupo
     })
+}) 
+
+
+app.post('/assistencia/publicadores-ter/:id', async(req, res) => {
+    const { getTerTab } = getToday.getToday()
+    const db = await dbConnection
+    const publicadores = Object.keys(req.body)
+
+    publicadores.forEach( async publicador => {
+        await db.run(`update assistencia${getTerTab} set presente = 1 where publicador = '${publicador}'`)
+    })
+
+    res.redirect('/assistencia')
 })
+
+
+app.post('/assistencia/publicadores-sab/:id', async(req, res) => {
+    const { getSabTab } = getToday.getToday()
+    const { id } = req.params
+    const db = await dbConnection
+    const publicadores = Object.keys(req.body) // vem dos checkbox da view
+    const publicadoresDB = await db.all(`select * from assistencia${getSabTab} where grupo=${id};`)
+    
+
+    let pubs = []
+    publicadoresDB.forEach( pub => {
+        pubs.push(pub.publicador)
+    })
+
+    console.log(pubs)
+
+    publicadores.forEach( async publicador => {
+        await db.run(`update assistencia${getSabTab} set presente = 1 where publicador = '${publicador}'`)
+    })
+    
+    res.redirect('/assistencia')
+})
+
+
+
+
+//GRUPOS
 
 app.get('/grupos', async(req, res) => {
     const db = await dbConnection
     const grupos = await db.all('select * from grupos;')
 
-    res.render('grupos', {
+    res.render('grupos/home', {
         grupos
     })
 })
@@ -93,20 +205,19 @@ app.get('/grupo/:id', async(req, res) => {
     const db = await dbConnection
     const grupo = await db.get(`select * from grupos where id = ${id}`)
     const publicadores = await db.all(`select * from publicadores where grupo=${id};`)
-    console.log(grupo)
 
-    res.render('grupo', {
+    res.render('grupos/grupo', {
         publicadores,
         grupo
     })
 })
 
-app.get('/grupo/publicador/:id', async(req, res) => {
+app.get('/publicador/:id', async(req, res) => {
     const { id } = req.params
     const db = await dbConnection
     const publicador = await db.get(`select * from publicadores where id=${id};`)
     const {grupo, nome, pioneiro, servo, anciao, tvjw, diretrizes, dc50 } = publicador
-    res.render('publicador', {
+    res.render('grupos/publicador', {
         publicador,
         grupo,
         nome,
@@ -119,7 +230,7 @@ app.get('/grupo/publicador/:id', async(req, res) => {
     })
 })
 
-
+//ADMIN
 
 app.get('/admin', (req, res) => {
     res.render('admin/home')
@@ -166,8 +277,6 @@ app.get('/admin/grupos/delete/:id', async(req, res) => {
     res.redirect('/admin/grupos')
 })
 
-//PUBLICADORES
-
 app.get('/admin/publicadores', async(req, res) => {
     const db = await dbConnection
     const publicadores = await db.all('select * from publicadores')
@@ -198,8 +307,11 @@ app.post('/admin/publicadores/novo', async(req, res) => {
 
     await db.run(`insert into publicadores(nome, grupo, pioneiro, servo, anciao, tvjw, diretrizes, dc50)
      values('${nome}',${grupo}, ${pioneiro}, ${servo},${anciao},${tvjw},${diretrizes},${dc50});`)
-    res.redirect('/admin/publicadores')
+     
+     init() // INIT BANCO DE DADOS
+     res.redirect('/admin/publicadores')
 })
+
 
 
 app.get('/admin/publicadores/editar/:id', async(req, res) => {
@@ -240,9 +352,16 @@ app.get('/admin/publicadores/delete/:id', async(req, res) => {
     res.redirect('/admin/publicadores')
 })
   
+//BANCO DE DADOS
+
 const init = async() => {
+    const { getSabDB, getTerDB, getSabTab, getTerTab } = getToday.getToday()
+    const today = new Date
     const db = await dbConnection
-    await db.run('create table if not exists grupos (id INTEGER PRIMARY KEY, grupo TEXT)')
+
+    await db.run(`create table if not exists grupos (id INTEGER PRIMARY KEY, 
+                                                            grupo TEXT)`)
+
     await db.run(`create table if not exists publicadores (id INTEGER PRIMARY KEY, 
                                                             grupo INTEGER, 
                                                             nome TEXT,
@@ -251,11 +370,55 @@ const init = async() => {
                                                             anciao INTEGER,
                                                             tvjw INTEGER,
                                                             diretrizes INTEGER,
-                                                            dc50 INTEGER,
-                                                            presente INTEGER)`)
+                                                            dc50 INTEGER)`)
+
+    await db.run(`create table if not exists data (id INTEGER PRIMARY KEY,
+                                                            data TEXT,
+                                                            mes TEXT,
+                                                            ano TEXT, 
+                                                            UNIQUE(data))`)
+
+    await db.run(`create table if not exists assistencia${getSabTab} (id INTEGER PRIMARY KEY,
+                                                            publicador TEXT,
+                                                            presente INTEGER,
+                                                            grupo INTEGER,
+                                                            UNIQUE(publicador) )`) 
+    
+    await db.run(`create table if not exists assistencia${getTerTab} (id INTEGER PRIMARY KEY,
+                                                            publicador TEXT,
+                                                            presente INTEGER,
+                                                            grupo INTEGER,
+                                                            UNIQUE(publicador))`)    
+                                                                
+    const publicadores = await db.all('select * from publicadores')
+
+    const month = new Array('Janeiro','Fevereiro','Março','Abril','Maio','Junho','Julho','Agosto','Setembro','Outubro','Novembro','Dezembro');
+
+    for (i=0; i<12; i++){
+        for(j=0; j<10; j++){
+
+        
+        await db.run(`insert or ignore into data (mes, ano) values('${month[i]}','${today.getFullYear()}')`)
+        }
+    }
+
+
+
+    //await db.run(`insert or ignore into data (data) values('${getTerDB}')`)
+    //await db.run(`insert or ignore into data (data) values('${getSabDB}')`)
+
+    
+
+    publicadores.forEach( async pub => {
+        await db.run(`insert or ignore into assistencia${getTerTab} (publicador, presente, grupo) values('${pub.nome}', 0, ${pub.grupo} )`)
+    })
+    publicadores.forEach( async pub => {
+        await db.run(`insert or ignore into assistencia${getSabTab} (publicador, presente, grupo) values('${pub.nome}', 0, ${pub.grupo} )`)
+    })
+                                                            
 }
 
-init()
+init() // INIT BANCO DE DADOS
 
 app.listen(port, (err) => {
     if (err) {

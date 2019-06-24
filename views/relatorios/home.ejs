@@ -1,0 +1,10 @@
+<%- include('../header') %>
+
+    <h2> Relatório Grupos </h2>
+
+    <% grupos.forEach( grupo => { %>
+        <ul>
+            <li class="li"><a href="/relatorios/grupo/<%- grupo.id %>"> <%- grupo.grupo %> </a></li>
+        </ul>
+    <%}) %>
+

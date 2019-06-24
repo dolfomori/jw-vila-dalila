@@ -12,14 +12,14 @@
             <% publicadores.forEach ( publicador => { %>
 
             <li class="pub"><%- publicador.nome %>
-            <a href="/admin/publicadores/delete/<%- publicador.id %>"><button class="button-ed">Excluir</button></a>
+            <a href="/admin/publicadores/delete/<%- publicador.id %>"><button class="button-ed" onclick="return confirm('Excluir Publicador?')">Excluir</button></a>
             <a href="/admin/publicadores/editar/<%- publicador.id %>"><button class="button-ed"> Editar</button></a>
             </li>
             <% }) %>
             
         </ul>
     </div>
-    <a href="/admin/publicadores/novo"><button class="header-jw" id="novo-grupo"> Novo Publicador</button></a>
+    <a href="/admin/publicadores/novo"><button class="pure-button pure-button-primary" id="novo-grupo"> Novo Publicador</button></a>
 
 </body>
 
