@@ -23,7 +23,7 @@
 
                         <%}) %>
 
-                        <button class="pure-button pure-button-primary" id="novo-grupo" onclick="return confirm('Enviar Assistência? Após enviada só será possível alterações pelo Admin!')" >Enviar Dados</button>
+                        <button  class="pure-button pure-button-primary" id="novo-grupo" <% if(x == 1) { %> disabled <% } %> onclick="return confirm('Enviar Assistência? Após enviada só será possível alterações pelo Admin!')" >Enviar Dados</button>
 
 
                 </form>

@@ -49,40 +49,42 @@ app.get('/', async(req, res) => {
 
 app.get('/relatorios', async(req, res) => {
     const db = await dbConnection
-    const grupos = await db.all('select * from grupos;')
+    const Junho = await db.all('select * from Junho;')
 
     res.render('relatorios/home', {
-        grupos
+        Junho
+
     })
 })
 
-app.get('/relatorios/grupo/:id', async(req, res) => {
-    const { id } = req.params
-    const db = await dbConnection
-    const grupo = await db.get(`select * from grupos where id = ${id}`)
-    const publicadores = await db.all(`select * from publicadores where grupo=${id};`)
-    const months = { Janeiro:1,
-                    Fevereiro:2,
-                    Março:3,
-                    Abril:4,
-                    Maio:5,
-                    Junho:6,
-                    Julho:7,
-                    Agosto:8,
-                    Setembro:9,
-                    Outubro:10,
-                    Novembro:11,
-                    Dezembro:12 }
-    const months2 = Object.keys(months)
+// app.get('/relatorios/grupo/:id', async(req, res) => {
+//     const { id } = req.params
+//     const db = await dbConnection
+//     const grupo = await db.get(`select * from grupos where id = ${id}`)
+//     const publicadores = await db.all(`select * from publicadores where grupo=${id};`)
+//     const months = { Janeiro:1,
+//                     Fevereiro:2,
+//                     Março:3,
+//                     Abril:4,
+//                     Maio:5,
+//                     Junho:6,
+//                     Julho:7,
+//                     Agosto:8,
+//                     Setembro:9,
+//                     Outubro:10,
+//                     Novembro:11,
+//                     Dezembro:12 }
+//     const months2 = Object.keys(months)
+//     const months3 = Object.values(months)
 
-    console.log(res)
-    res.render('relatorios/grupo', {
-        grupo,
-        publicadores,
-        months2
-    })
-})
-
+//         console.log(months2)
+//     res.render('relatorios/grupo', {
+//         grupo,
+//         publicadores,
+//         months2,
+//         months3
+//     })
+// })
 
 
 
@@ -128,7 +130,6 @@ app.get('/assistencia/publicadores-ter/:id', async(req, res) => {
     //const publicadores = await db.all(`select * from publicadores where grupo=${id};`)
     const publicadores = await db.all(`select * from assistencia${getTerTab} where grupo=${id};`)
 
-    console.log(publicadores)
 
     res.render('assistencia/publicadores-ter', {
         publicadores,
@@ -176,8 +177,6 @@ app.post('/assistencia/publicadores-sab/:id', async(req, res) => {
     publicadoresDB.forEach( pub => {
         pubs.push(pub.publicador)
     })
-
-    console.log(pubs)
 
     publicadores.forEach( async publicador => {
         await db.run(`update assistencia${getSabTab} set presente = 1 where publicador = '${publicador}'`)
@@ -355,7 +354,7 @@ app.get('/admin/publicadores/delete/:id', async(req, res) => {
 //BANCO DE DADOS
 
 const init = async() => {
-    const { getSabDB, getTerDB, getSabTab, getTerTab } = getToday.getToday()
+    const { getSabDB, getTerDB, getSabTab, getTerTab, month } = getToday.getToday()
     const today = new Date
     const db = await dbConnection
 
@@ -389,26 +388,30 @@ const init = async() => {
                                                             presente INTEGER,
                                                             grupo INTEGER,
                                                             UNIQUE(publicador))`)    
+
+    await db.run(`create table if not exists ${month} (id INTEGER PRIMARY KEY,
+                                                                dias TEXT,
+                                                                UNIQUE(dias))`)  
+                                                                
+    await db.run(`create table if not exists meses (id INTEGER PRIMARY KEY,
+                                                                mes TEXT,
+                                                                UNIQUE(mes))`)   
                                                                 
     const publicadores = await db.all('select * from publicadores')
 
-    const month = new Array('Janeiro','Fevereiro','Março','Abril','Maio','Junho','Julho','Agosto','Setembro','Outubro','Novembro','Dezembro');
 
-    for (i=0; i<12; i++){
-        for(j=0; j<10; j++){
+    const getMonth = ['Janeiro','Fevereiro','Março','Abril','Maio','Junho','Julho','Agosto','Setembro','Outubro','Novembro','Dezembro']
 
-        
-        await db.run(`insert or ignore into data (mes, ano) values('${month[i]}','${today.getFullYear()}')`)
-        }
-    }
+    await db.run(`insert or ignore into data (data) values('${getTerDB}')`)
+    await db.run(`insert or ignore into data (data) values('${getSabDB}')`)
 
+    await db.run(`insert or ignore into ${month} (dias) values('${getTerTab}')`)
+    await db.run(`insert or ignore into ${month} (dias) values('${getSabTab}')`)
 
-
-    //await db.run(`insert or ignore into data (data) values('${getTerDB}')`)
-    //await db.run(`insert or ignore into data (data) values('${getSabDB}')`)
-
-    
-
+     getMonth.forEach( async month => {
+         await db.run(`insert or ignore into meses (mes) values('${month}')`)
+     })
+    // insere os publicadores ao DB
     publicadores.forEach( async pub => {
         await db.run(`insert or ignore into assistencia${getTerTab} (publicador, presente, grupo) values('${pub.nome}', 0, ${pub.grupo} )`)
     })

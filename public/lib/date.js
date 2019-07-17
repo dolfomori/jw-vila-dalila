@@ -90,7 +90,6 @@ module.exports = {
     //Watch out for end of month transitions
     var endOfMonth = new Date(2016, 7, 31);
     endOfMonth.setMonth(1);
-    console.log(endOfMonth); //Wed Mar 02 2016 00:00:00
 
 
 
